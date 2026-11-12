@@ -325,17 +325,17 @@ function buildAutoBlocks(main) {
 
 ## Environments
 
-URL construction uses `{repo}` and `{owner}` from `gh repo view --json nameWithOwner`; use `git branch` for `{branch}`.
+URL construction uses `fps` and `chis-adobe` from `gh repo view --json nameWithOwner`; use `git branch` for `{branch}`.
 
 - **Local** (uncommitted code + previewed content): http://localhost:3000/{path} 
-- **Preview**: `https://{branch}--{repo}--{owner}.aem.page/{path}`
-- **Live**: `https://main--{repo}--{owner}.aem.live/{path}`
+- **Preview**: `https://{branch}--fps--chis-adobe.aem.page/{path}`
+- **Live**: `https://main--fps--chis-adobe.aem.live/{path}`
 
 ## Pull request workflow
 
 1. **Lint passes**: `npm run lint` must pass (CI enforces this)
 2. **Test locally**: Verify at http://localhost:3000
-3. **Push to branch**: `https://{branch}--{repo}--{owner}.aem.page/{path}`
+3. **Push to branch**: `https://{branch}--fps--chis-adobe.aem.page/{path}`
 4. **Performance**: Run [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) on preview URL; fix until meeting Performance requirement
 5. **Open PR**: Use `.github/pull_request_template.md`. Fill in:
   - Issue reference: `Fix #<issue-id>`
@@ -364,6 +364,6 @@ Edge Delivery Services. Read a block first. Omissions are in the repo or known.
 ## Remember
 - `npx -y @adobe/aem-cli up`: local code, previewed content.
 - Merging `main` ships code; content publishes separately.
-- A PR without a `{branch}--{repo}--{owner}.aem.page/{path}` link is rejected.
+- A PR without a `{branch}--fps--chis-adobe.aem.page/{path}` link is rejected.
 - All committed files are served. Use `.hlxignore`.
 - Skills: `/plugin marketplace add adobe/skills`, then `aem-edge-delivery-services` (24 skills, incl. `docs-search`).
