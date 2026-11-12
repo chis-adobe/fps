@@ -1,0 +1,30 @@
+/* homepage template: section headings with an inline "see all" link */
+.homepage main .default-content-wrapper:has(> h2 + p > a) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--spacing-l);
+  margin-bottom: var(--spacing-m);
+}
+
+.homepage main .default-content-wrapper h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.homepage main .default-content-wrapper:has(> h2 + p > a) p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.homepage main .default-content-wrapper:has(> h2 + p > a) p a::after {
+  content: ' ›';
+}
+
+/* Promotions / New products: separator between the groups */
+.homepage main > .section.teaser-lists .default-content-wrapper ~ .default-content-wrapper {
+  margin-top: var(--spacing-xxl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid #d8d8d8;
+}

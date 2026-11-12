@@ -1,0 +1,26 @@
+{
+  "templates": [
+    {
+      "name": "homepage",
+      "description": "Thermo Fisher homepage: hero, teaser bar, featured education + accelerating science, promotions + new products. Also emits the hero experiment challengers and the nav/footer fragments.",
+      "urls": [
+        "https://www.thermofisher.com/us/en/home.html"
+      ],
+      "blocks": [
+        { "name": "hero", "instances": [".offer-content.hr"] },
+        { "name": "teaser", "instances": [".offer-content.tf-hero-pod", ".offer-content.tf-hp-edu-lc", ".offer-content.tf-hp-edu-sc", ".offer-content.pc", ".offer-content.np"] },
+        { "name": "article-list", "instances": [".dynamic-offer:has(.post)"] }
+      ]
+    },
+    {
+      "name": "blog-post",
+      "description": "Thermo Fisher blog article (WordPress). Also emits the article's author page.",
+      "urls": [
+        "https://www.thermofisher.com/blog/semiconductors/fib-sem-semiconductor-characterization/",
+        "https://www.thermofisher.com/blog/life-in-the-lab/bioprocessing-cell-culture-engineering-antibody-drug-conjugates/",
+        "https://www.thermofisher.com/blog/metals/honoring-those-who-wore-the-metal-tags-veterans-day-2026/"
+      ],
+      "blocks": []
+    }
+  ]
+}

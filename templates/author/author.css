@@ -1,0 +1,14 @@
+.author main > .section > div {
+  max-width: 860px;
+}
+
+.author main h1 {
+  font-weight: 300;
+}
+
+.author main picture img {
+  width: 160px;
+  height: 196px;
+  object-fit: cover;
+  border-radius: var(--border-radius-s);
+}

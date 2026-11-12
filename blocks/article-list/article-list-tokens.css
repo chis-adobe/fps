@@ -1,0 +1,10 @@
+/* article-list design tokens */
+:root {
+  --article-list-gap: var(--spacing-l);
+  --article-list-image-width: 160px;
+  --article-list-image-ratio: 16 / 10;
+  --article-list-title-size: 18px;
+  --article-list-meta-size: var(--body-font-size-xs);
+  --article-list-meta-color: #666;
+  --article-list-divider: 1px solid #d8d8d8;
+}

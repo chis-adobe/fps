@@ -18,3 +18,7 @@ Trace*.json
 # Playwright / a11y test artifacts
 playwright-report/
 test-results/
+
+# importer build output
+tools/importer/*.bundle.js
+tools/importer/reports/

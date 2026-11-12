@@ -1,7 +1,15 @@
 /* hero design tokens */
-:root { /* @boilerplate */
-  --hero-padding: var(--spacing-xl) var(--spacing-m); /* @boilerplate */
-  --hero-padding-desktop: var(--spacing-xl) var(--spacing-l); /* @boilerplate */
-  --hero-min-height: 300px; /* @boilerplate */
-  --hero-heading-max-width: var(--max-width-site); /* @boilerplate */
+:root {
+  --hero-padding: var(--spacing-xl) var(--spacing-m);
+  --hero-padding-desktop: 64px 32px 96px;
+  --hero-min-height: 300px;
+  --hero-min-height-desktop: 428px;
+  --hero-heading-max-width: var(--max-width-site);
+  --hero-text-color: var(--background-color);
+  --hero-heading-size: 34px;
+  --hero-heading-size-desktop: 50px;
+  --hero-subheading-size: 20px;
+  --hero-subheading-size-desktop: 30px;
+  --hero-text-weight: 300;
+  --hero-overlay: linear-gradient(90deg, rgb(0 0 0 / 35%) 0%, rgb(0 0 0 / 0%) 60%);
 }

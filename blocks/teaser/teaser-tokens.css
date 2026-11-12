@@ -1,0 +1,15 @@
+/* teaser design tokens */
+:root {
+  --teaser-background: var(--background-color);
+  --teaser-background-no-image: var(--light-color);
+  --teaser-radius: var(--border-radius-s);
+  --teaser-shadow: 0 4px 6px 0 rgb(34 34 34 / 10%);
+  --teaser-border: 1px solid #d8d8d8;
+  --teaser-padding: var(--spacing-m);
+  --teaser-title-size: var(--body-font-size-s);
+  --teaser-title-size-large: 22px;
+  --teaser-description-size: var(--body-font-size-xs);
+  --teaser-cta-color: var(--link-color);
+  --teaser-image-ratio: 16 / 9;
+  --teaser-overlay-text-color: var(--background-color);
+}

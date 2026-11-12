@@ -6,7 +6,7 @@
   --header-nav-padding-desktop: 0 var(--spacing-l); /* @boilerplate */
   --header-nav-gap: var(--spacing-m); /* @boilerplate */
   --header-nav-gap-desktop: var(--spacing-l); /* @boilerplate */
-  --header-brand-width: 128px; /* @boilerplate */
+  --header-brand-width: 140px;
   --header-dropdown-width: 200px; /* @boilerplate */
   --header-dropdown-padding: var(--spacing-s); /* @boilerplate */
   --header-dropdown-left: calc(-1 * var(--spacing-m)); /* @boilerplate */

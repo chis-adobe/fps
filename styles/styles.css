@@ -31,14 +31,14 @@
  */
 :root { /* @boilerplate */
   /* colors */
-  --brand-primary: #666; /* @boilerplate */
-  --brand-secondary: #999; /* @boilerplate */
+  --brand-primary: #e71316;
+  --brand-secondary: #0071d0;
   --background-color: white; /* @boilerplate */
-  --light-color: #f8f8f8; /* @boilerplate */
-  --dark-color: #505050; /* @boilerplate */
-  --text-color: #131313; /* @boilerplate */
-  --link-color: #3b63fb; /* @boilerplate */
-  --link-hover-color: #1d3ecf; /* @boilerplate */
+  --light-color: #eee;
+  --dark-color: #222;
+  --text-color: #222;
+  --link-color: #0071d0;
+  --link-hover-color: #005aa6;
   --overlay-background-color: lightgrey; /* @boilerplate */
   --error-color: firebrick; /* @boilerplate */
 
@@ -49,29 +49,29 @@
   --color-action-hover: var(--link-hover-color); /* @boilerplate */
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif; /* @boilerplate */
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif; /* @boilerplate */
+  --body-font-family: 'Helvetica Neue', helvetica, roboto, 'Segoe UI', arial, sans-serif;
+  --heading-font-family: 'Helvetica Neue', helvetica, roboto, 'Segoe UI', arial, sans-serif;
   --fixed-font-family: 'Roboto Mono', menlo, consolas, monospace; /* @boilerplate */
 
   /* body sizes */
   --body-font-size-xl: 22px; /* @boilerplate */
   --body-font-size-l: 20px; /* @boilerplate */
-  --body-font-size-m: 18px; /* @boilerplate */
-  --body-font-size-s: 16px; /* @boilerplate */
-  --body-font-size-xs: 14px; /* @boilerplate */
+  --body-font-size-m: 17px;
+  --body-font-size-s: 16px;
+  --body-font-size-xs: 14px;
 
   /* heading sizes */
-  --heading-font-size-xxl: 44px; /* @boilerplate */
-  --heading-font-size-xl: 40px; /* @boilerplate */
-  --heading-font-size-l: 36px; /* @boilerplate */
-  --heading-font-size-m: 32px; /* @boilerplate */
-  --heading-font-size-s: 28px; /* @boilerplate */
-  --heading-font-size-xs: 24px; /* @boilerplate */
+  --heading-font-size-xxl: 36px;
+  --heading-font-size-xl: 28px;
+  --heading-font-size-l: 22px;
+  --heading-font-size-m: 20px;
+  --heading-font-size-s: 18px;
+  --heading-font-size-xs: 16px;
 
   /* line heights & weights */
   --body-line-height: 1.6; /* @boilerplate */
   --heading-line-height: 1.25; /* @boilerplate */
-  --heading-font-weight: 600; /* @boilerplate */
+  --heading-font-weight: 500;
 
   /* space above/below text elements */
   --element-margin-top: 0.8em; /* @boilerplate */
@@ -100,23 +100,23 @@
   --focus-ring-color: var(--link-color); /* @boilerplate */
 
   /* layout */
-  --max-width-site: 1200px; /* @boilerplate */
+  --max-width-site: 1408px;
   --icon-size: 24px; /* @boilerplate */
 
   /* buttons (primary CTA = action color; secondary = outline) */
   --button-margin: 12px 0; /* @boilerplate */
-  --button-padding: 0.5em 1.2em; /* @boilerplate */
+  --button-padding: 0.7em 1.4em;
   --button-border-width: 2px; /* @boilerplate */
-  --button-border-radius: 2.4em; /* @boilerplate */
-  --button-font-weight: 500; /* @boilerplate */
+  --button-border-radius: 3px;
+  --button-font-weight: 700;
   --button-line-height: 1.25; /* @boilerplate */
-  --button-background: var(--color-action); /* @boilerplate */
-  --button-hover-background: var(--color-action-hover); /* @boilerplate */
+  --button-background: var(--brand-primary);
+  --button-hover-background: #c00f12;
   --button-text-color: var(--background-color); /* @boilerplate */
   --button-disabled-background: var(--light-color); /* @boilerplate */
 
   /* nav heights */
-  --nav-height: 64px; /* @boilerplate */
+  --nav-height: 80px;
   --breadcrumbs-height: 34px; /* @boilerplate */
   --header-height: var(--nav-height); /* @boilerplate */
 }
@@ -463,22 +463,60 @@ main > .section:first-of-type { /* @boilerplate */
   margin-top: 0; /* @boilerplate */
 }
 
+/* Section Metadata style: full-width (content spans the viewport, no section padding) */
+main > .section.full-width {
+  padding: 0;
+}
+
+main > .section.full-width > div:not(.bg-image) {
+  max-width: none;
+  padding: 0;
+}
+
+/* consecutive teaser blocks are grouped into a list by scripts.js (decorateTeaserLists) */
+main .teaser-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-m);
+}
+
+/* Section Metadata style: horizontal (each heading-led group becomes a column) */
+main > .section.horizontal .section-columns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+main > .section.horizontal .section-column {
+  min-width: 0;
+}
+
+main > .section.horizontal .section-column > div {
+  margin: 0;
+}
+
+/* Section Metadata style: teaser-bar-overlap (section pulls up over the section above it) */
+main > .section.teaser-bar-overlap {
+  position: relative;
+  z-index: 1;
+}
+
 @media (width >= 900px) { /* @boilerplate */
   :root { /* @boilerplate */
     /* body sizes increased by 2px */
-    --body-font-size-xl: 24px; /* @boilerplate */
-    --body-font-size-l: 22px; /* @boilerplate */
-    --body-font-size-m: 20px; /* @boilerplate */
-    --body-font-size-s: 18px; /* @boilerplate */
-    --body-font-size-xs: 16px; /* @boilerplate */
+    --body-font-size-xl: 22px;
+    --body-font-size-l: 20px;
+    --body-font-size-m: 18px;
+    --body-font-size-s: 16px;
+    --body-font-size-xs: 14px;
   
     /* heading sizes increased by 2px */
-    --heading-font-size-xxl: 46px; /* @boilerplate */
-    --heading-font-size-xl: 42px; /* @boilerplate */
-    --heading-font-size-l: 38px; /* @boilerplate */
-    --heading-font-size-m: 34px; /* @boilerplate */
-    --heading-font-size-s: 30px; /* @boilerplate */
-    --heading-font-size-xs: 26px; /* @boilerplate */
+    --heading-font-size-xxl: 40px;
+    --heading-font-size-xl: 30px;
+    --heading-font-size-l: 24px;
+    --heading-font-size-m: 20px;
+    --heading-font-size-s: 18px;
+    --heading-font-size-xs: 16px;
 
     /* spacing scale increased by 4px */
     --spacing-xxl: 34px; /* @boilerplate */
@@ -487,6 +525,40 @@ main > .section:first-of-type { /* @boilerplate */
     --spacing-m: 20px; /* @boilerplate */
     --spacing-s: 16px; /* @boilerplate */
     --spacing-xs: 12px; /* @boilerplate */
+  }
+
+  main .teaser-list-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  main .teaser-list-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  main .teaser-list-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  main > .section.horizontal .section-columns {
+    flex-direction: row;
+    gap: var(--spacing-xxl);
+  }
+
+  main > .section.horizontal .section-column {
+    flex: 1 1 0;
+  }
+
+  main > .section.horizontal .section-column:first-child {
+    flex-grow: 1.4;
+  }
+
+  main > .section.horizontal .teaser-list {
+    grid-template-columns: 1fr;
+  }
+
+  main > .section.teaser-bar-overlap {
+    margin-top: -45px;
+    padding-top: 0;
   }
 
   body[data-breadcrumbs] { /* @boilerplate */

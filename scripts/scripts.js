@@ -403,7 +403,115 @@ export function decorateSections(main) {
   }
 }
 
+/**
+ * Groups runs of consecutive teaser blocks into a `.teaser-list` so they lay out as a grid.
+ * The list gets a `teaser-list-{count}` class so the grid can match the number of teasers.
+ * @param {Element} main The container element
+ */
+function decorateTeaserLists(main) {
+  main.querySelectorAll(':scope > .section').forEach((section) => {
+    const runs = [];
+    let current = [];
+    [...section.children].forEach((child) => {
+      if (child.classList.contains('teaser-wrapper')) {
+        current.push(child);
+      } else if (current.length) {
+        runs.push(current);
+        current = [];
+      }
+    });
+    if (current.length) runs.push(current);
+
+    runs.filter((run) => run.length > 1).forEach((run) => {
+      const list = document.createElement('div');
+      list.className = `teaser-list teaser-list-${run.length}`;
+      run[0].before(list);
+      list.append(...run);
+    });
+  });
+}
+
+/**
+ * Lays out sections styled `horizontal` side by side: every default-content group (e.g. a
+ * heading and its "see all" link) starts a new column holding the blocks that follow it.
+ * @param {Element} main The container element
+ */
+function decorateHorizontalSections(main) {
+  main.querySelectorAll(':scope > .section.horizontal').forEach((section) => {
+    const columns = [];
+    [...section.children].forEach((child) => {
+      const startsColumn = child.classList.contains('default-content-wrapper');
+      if (!columns.length || (startsColumn && columns.at(-1).children.length)) {
+        const column = document.createElement('div');
+        column.className = 'section-column';
+        columns.push(column);
+      }
+      columns.at(-1).append(child);
+    });
+    if (columns.length < 2) {
+      section.append(...columns.flatMap((column) => [...column.children]));
+      return;
+    }
+    const wrapper = document.createElement('div');
+    wrapper.className = 'section-columns';
+    wrapper.append(...columns);
+    section.append(wrapper);
+  });
+}
+
 /* === END SECTIONS === */
+
+/**
+ * Adds a page metadata entry unless the page already defines it.
+ * Templates use this to provide defaults (e.g. which nav/footer fragment to load).
+ * @param {string} name The metadata name
+ * @param {string} content The metadata value
+ */
+export function setDefaultMetadata(name, content) {
+  if (getMetadata(name)) return;
+  const meta = document.createElement('meta');
+  meta.setAttribute('name', name);
+  meta.setAttribute('content', content);
+  document.head.append(meta);
+}
+
+/** Page templates available in /templates/{name}/ (selected with the `template` metadata). */
+const TEMPLATES = ['homepage', 'blog-post', 'author'];
+
+/**
+ * Loads the page template's CSS and JS, if the page uses a known template.
+ * @param {Document} doc The document
+ */
+async function loadTemplate(doc) {
+  const template = toClassName(getMetadata('template'));
+  if (!TEMPLATES.includes(template)) return;
+  const base = `${window.hlx.codeBasePath}/templates/${template}/${template}`;
+  try {
+    const [mod] = await Promise.all([
+      import(`${base}.js`),
+      loadCSS(`${base}.css`),
+    ]);
+    if (mod.default) await mod.default(doc);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Failed to load template ${template}`, error);
+  }
+}
+
+/**
+ * Runs a content experiment when the page defines one in its metadata.
+ * @param {Document} doc The document
+ */
+async function loadExperiment(doc) {
+  if (!getMetadata('experiment') || !getMetadata('experiment-variants')) return;
+  try {
+    const { default: runExperiment } = await import('./experiment.js');
+    await runExperiment(doc, { ensureDOMPurify });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Experiment failed', error);
+  }
+}
 
 
 /**
@@ -416,6 +524,8 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateTeaserLists(main);
+  decorateHorizontalSections(main);
   if (FEATURES.nestedSections) decorateNestedSections(main);
   decorateButtons(main);
   a11yLinks(main);
@@ -433,6 +543,8 @@ async function loadEager(doc) {
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
   }
+  await loadExperiment(doc);
+  await loadTemplate(doc);
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);

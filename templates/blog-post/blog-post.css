@@ -1,0 +1,29 @@
+.blog-post main > .section > div {
+  max-width: 860px;
+}
+
+.blog-post main h1 {
+  font-size: var(--heading-font-size-xxl);
+  font-weight: 300;
+}
+
+.blog-post main .blog-post-byline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-m);
+  color: #666;
+  font-size: var(--body-font-size-xs);
+}
+
+.blog-post main .blog-post-author {
+  font-weight: 700;
+}
+
+.blog-post main figure {
+  margin: var(--spacing-m) 0;
+}
+
+.blog-post main figcaption {
+  font-size: var(--body-font-size-xs);
+  color: #666;
+}

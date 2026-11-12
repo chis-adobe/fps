@@ -1,22 +1,79 @@
 @import url('./footer-tokens.css');
 
-footer { /* @boilerplate */
-  background-color: var(--light-color); /* @boilerplate */
-  font-size: var(--body-font-size-xs); /* @boilerplate */
+footer {
+  border-top: 1px solid #d8d8d8;
+  background-color: var(--footer-background);
+  color: var(--footer-text-color);
+  font-size: var(--body-font-size-xs);
 }
 
-footer .footer > div { /* @boilerplate */
-  margin: auto; /* @boilerplate */
-  max-width: var(--footer-max-width); /* @boilerplate */
-  padding: var(--footer-padding); /* @boilerplate */
+footer .footer > div {
+  margin: auto;
+  max-width: var(--footer-max-width);
+  padding: var(--footer-padding);
 }
 
-footer .footer p { /* @boilerplate */
-  margin: 0; /* @boilerplate */
+footer .footer .section {
+  padding: 0;
 }
 
-@media (width >= 900px) { /* @boilerplate */
-  footer .footer > div { /* @boilerplate */
-    padding: var(--footer-padding-desktop); /* @boilerplate */
+footer .footer .section > div {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+footer .footer p {
+  margin: 0;
+}
+
+footer .footer a {
+  color: var(--footer-link-color);
+}
+
+footer .footer h2 {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  color: var(--footer-text-color);
+}
+
+footer .footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+footer .footer li {
+  padding: 4px 0;
+}
+
+/* link columns (columns block inside the footer fragment) */
+footer .footer .columns > div {
+  align-items: flex-start;
+  gap: var(--spacing-l);
+}
+
+/* legal row */
+footer .footer .section.footer-legal {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-m);
+  background-color: var(--footer-legal-background);
+  font-size: 12px;
+}
+
+footer .footer .section.footer-legal ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--spacing-m);
+}
+
+footer .footer .section.footer-legal p {
+  margin-top: var(--spacing-xs);
+}
+
+@media (width >= 900px) {
+  footer .footer > div {
+    padding: var(--footer-padding-desktop);
   }
 }

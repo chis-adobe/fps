@@ -2,6 +2,7 @@
 
 /* header and nav layout */
 header .nav-wrapper { /* @boilerplate */
+  border-bottom: 1px solid #d8d8d8;
   background-color: var(--background-color); /* @boilerplate */
   width: 100%; /* @boilerplate */
   z-index: 2; /* @boilerplate */
@@ -149,6 +150,13 @@ header .nav-brand { /* @boilerplate */
 header nav .nav-brand img { /* @boilerplate */
   width: var(--header-brand-width); /* @boilerplate */
   height: auto; /* @boilerplate */
+}
+
+header nav .nav-brand .icon {
+  display: block;
+  width: var(--header-brand-width);
+  height: auto;
+  aspect-ratio: 485 / 224;
 }
 
 /* sections */

@@ -1,6 +1,10 @@
 /* footer design tokens */
-:root { /* @boilerplate */
-  --footer-max-width: var(--max-width-site); /* @boilerplate */
-  --footer-padding: var(--spacing-xl) var(--spacing-m) var(--spacing-m); /* @boilerplate */
-  --footer-padding-desktop: var(--spacing-xl) var(--spacing-l) var(--spacing-m); /* @boilerplate */
+:root {
+  --footer-max-width: var(--max-width-site);
+  --footer-padding: var(--spacing-xl) var(--spacing-m) var(--spacing-m);
+  --footer-padding-desktop: 40px var(--spacing-l) var(--spacing-m);
+  --footer-background: var(--background-color);
+  --footer-text-color: #1b1b1d;
+  --footer-link-color: #54545c;
+  --footer-legal-background: #f7f7f7;
 }
