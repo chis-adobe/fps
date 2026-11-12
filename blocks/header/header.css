@@ -278,6 +278,20 @@ header nav .nav-tools { /* @boilerplate */
   grid-area: tools; /* @boilerplate */
 }
 
+header nav .nav-tools ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-l);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--body-font-size-s);
+}
+
+header nav .nav-tools a:hover {
+  color: var(--link-color);
+}
+
 header nav .nav-tools .button { /* @boilerplate */
   margin: 0; /* @boilerplate */
   border: none; /* @boilerplate */

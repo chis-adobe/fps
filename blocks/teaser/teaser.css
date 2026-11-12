@@ -140,6 +140,14 @@
   aspect-ratio: auto;
 }
 
+/* keep overlay text readable on light images */
+.section.horizontal .teaser.teaser-has-image .teaser-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 25%) 55%, rgb(0 0 0 / 0%) 80%);
+}
+
 .section.horizontal .teaser.teaser-has-image .teaser-content {
   position: relative;
   max-width: 55%;

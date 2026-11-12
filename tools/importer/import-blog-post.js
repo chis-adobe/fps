@@ -124,7 +124,6 @@ export default {
       ['Author', authorName],
       ['Author URL', authorPath],
       ['Date', date],
-      ['Image', ogImage ? Object.assign(document.createElement('img'), { src: ogImage, alt: '' }) : ''],
       ['Template', 'blog-post'],
     ]));
 
