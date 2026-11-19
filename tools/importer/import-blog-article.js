@@ -3,11 +3,12 @@
 
 /*
  * Blog article import (metadata-first structure).
- * One input (a Thermo Fisher WordPress article) -> /blog/{category}/{slug}:
- *   body:     the article content only (no title, no byline, no author box)
- *   metadata: Title, Description, Author URL (-> /authors/{first-last}), Date, Breadcrumb, Template
- * The blog-post template renders title, breadcrumb, byline and author card from the metadata
- * and the referenced author page.
+ * One input (a Thermo Fisher WordPress article) -> /blog/{slug} (directly under /blog):
+ *   body:     the article content only (no title, brief, top image, byline or author box)
+ *   metadata: Title, Brief, Image (+ Image Alt), Description, Author URL (-> /authors/{first-last}),
+ *             Date, Breadcrumb, Template
+ * The blog-post template renders breadcrumb, title, byline, brief, image and author card from the
+ * metadata and the referenced author page, so other pages (e.g. the homepage) can reference them.
  */
 
 import cleanupTransformer from './transformers/thermofisher-blog-cleanup.js';
@@ -40,7 +41,8 @@ function metadataTable(document, entries) {
 export default {
   transform: ({ document, url, params }) => {
     const originalUrl = params?.originalURL || url;
-    const path = new URL(originalUrl).pathname.replace(/\/$/, '');
+    const slug = new URL(originalUrl).pathname.replace(/\/$/, '').split('/').pop();
+    const path = `/blog/${slug}`;
 
     const article = document.querySelector('article') || document.body;
     cleanupTransformer('beforeTransform', article, { document, url, params, template: PAGE_TEMPLATE });
@@ -59,10 +61,34 @@ export default {
     const content = article.querySelector('.entry-content') || article;
     content.querySelectorAll('img').forEach((img) => img.setAttribute('src', assetUrl(img.getAttribute('src'))));
 
+    // brief: the heading 2 that opens the article
+    let brief = '';
+    const opening = content.firstElementChild;
+    if (opening?.tagName === 'H2') {
+      brief = text(opening);
+      opening.remove();
+    }
+
+    // image: the article's top image (its figure is removed from the body)
+    let image = '';
+    let imageAlt = '';
+    const topBlock = content.firstElementChild;
+    const topImg = topBlock?.matches('img') ? topBlock : topBlock?.querySelector('img');
+    if (topImg && !text(topBlock)) {
+      image = document.createElement('img');
+      image.src = topImg.getAttribute('src');
+      imageAlt = (topImg.getAttribute('alt') || '').trim();
+      image.alt = imageAlt;
+      topBlock.remove();
+    }
+
     const main = document.createElement('div');
     main.append(...content.childNodes);
     main.append(metadataTable(document, [
       ['Title', title],
+      ['Brief', brief],
+      ['Image', image],
+      ['Image Alt', imageAlt],
       ['Description', description],
       ['Author URL', authorName ? `/authors/${authorSlug(authorName)}` : ''],
       ['Date', date],

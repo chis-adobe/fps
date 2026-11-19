@@ -55,7 +55,7 @@ export function fetchPage(value) {
  * @returns {string}
  */
 function getImage(doc) {
-  const image = getMetadata('og:image', doc);
+  const image = getMetadata('og:image', doc) || getMetadata('image', doc);
   const url = toSafeUrl(image);
   if (!url || url.pathname.endsWith('/default-meta-image.png')) return '';
   return url.href;
@@ -81,7 +81,7 @@ export async function fetchAuthor(value) {
 /**
  * Reads the details of an article page from its metadata.
  * @param {string} value Article URL or path
- * @returns {Promise<object|null>} title, author, authorUrl, date, image
+ * @returns {Promise<object|null>} title, brief, author, authorUrl, date, image, imageAlt
  */
 export async function fetchArticle(value) {
   const doc = await fetchPage(value);
@@ -91,7 +91,9 @@ export async function fetchArticle(value) {
     author: getMetadata('author', doc),
     authorUrl: getMetadata('author-url', doc),
     date: getMetadata('date', doc) || getMetadata('published-time', doc),
+    brief: getMetadata('brief', doc),
     image: getImage(doc),
+    imageAlt: getMetadata('image-alt', doc),
   };
 }
 
