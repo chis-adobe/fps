@@ -9,3 +9,4 @@ workers/
 _*
 tests/
 tools/importer/
+config/

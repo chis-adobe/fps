@@ -4,8 +4,9 @@
 /*
  * Accelerating Science contributor (author) page import.
  * One input (https://admin.acceleratingscience.com/contributor/{slug}/) -> two documents:
- *   /authors/{first-last}    metadata only: Title (name), Description, Role, Profile,
- *                            Expertise, Education, Image (profile picture), Template
+ *   /authors/{first-last}    body: an Article Query block listing the author's articles
+ *                            (parameter author, value = the page's own path); metadata: Title (name),
+ *                            Description, Role, Profile, Expertise, Education, Image, Template
  *   /fragments/nav-blog      the simplified blog navigation used by blog + author pages
  */
 
@@ -108,7 +109,14 @@ export default {
       image.alt = headshot.getAttribute('alt') || name;
     }
 
+    const path = `/authors/${authorSlug(name)}`;
     const main = document.createElement('div');
+    // the author's articles, from the blog query index
+    main.append(WebImporter.DOMUtils.createTable([
+      ['Article Query'],
+      ['parameter', 'author'],
+      ['value', path],
+    ], document));
     main.append(metadataTable(document, [
       ['Title', name],
       ['Description', summarize(profile)],
@@ -121,7 +129,7 @@ export default {
     ]));
 
     return [
-      { element: main, path: `/authors/${authorSlug(name)}` },
+      { element: main, path },
       { element: buildBlogNav(document), path: '/fragments/nav-blog' },
     ];
   },

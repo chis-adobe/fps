@@ -1,0 +1,10 @@
+/* article-query design tokens */
+:root {
+  --article-query-gap: var(--spacing-l);
+  --article-query-image-width: 160px;
+  --article-query-image-ratio: 16 / 10;
+  --article-query-title-size: 18px;
+  --article-query-meta-size: var(--body-font-size-xs);
+  --article-query-meta-color: #666;
+  --article-query-divider: 1px solid #d8d8d8;
+}

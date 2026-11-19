@@ -6,7 +6,7 @@
  * One input (a Thermo Fisher WordPress article) -> /blog/{slug} (directly under /blog):
  *   body:     the article content only (no title, brief, top image, byline or author box)
  *   metadata: Title, Brief, Image (+ Image Alt), Description, Author URL (-> /authors/{first-last}),
- *             Date, Breadcrumb, Template
+ *             Date, Tags, Breadcrumb, Template
  * The blog-post template renders breadcrumb, title, byline, brief, image and author card from the
  * metadata and the referenced author page, so other pages (e.g. the homepage) can reference them.
  */
@@ -38,7 +38,30 @@ function metadataTable(document, entries) {
   return WebImporter.DOMUtils.createTable([['Metadata'], ...entries.filter(([, v]) => v)], document);
 }
 
+/** Article tags from the JSON-LD keywords (read in preprocess, before scripts are removed). */
+function readKeywords(document) {
+  for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      const json = JSON.parse(script.textContent);
+      const nodes = Array.isArray(json['@graph']) ? json['@graph'] : [json];
+      const node = nodes.find((n) => Array.isArray(n.keywords));
+      if (node) return node.keywords.map((k) => `${k}`.trim()).filter(Boolean);
+    } catch (e) { /* ignore invalid JSON-LD */ }
+  }
+  return [];
+}
+
+/** Fallback tags from the WordPress tag-* classes on the article. */
+function readTagClasses(article) {
+  return [...(article.className || '').matchAll(/\btag-([a-z0-9-]+)/g)]
+    .map((m) => m[1].replace(/-/g, ' '));
+}
+
 export default {
+  preprocess: ({ document, params }) => {
+    params.keywords = readKeywords(document);
+  },
+
   transform: ({ document, url, params }) => {
     const originalUrl = params?.originalURL || url;
     const slug = new URL(originalUrl).pathname.replace(/\/$/, '').split('/').pop();
@@ -92,6 +115,7 @@ export default {
       ['Description', description],
       ['Author URL', authorName ? `/authors/${authorSlug(authorName)}` : ''],
       ['Date', date],
+      ['Tags', (params?.keywords?.length ? params.keywords : readTagClasses(article)).join(', ')],
       ['Breadcrumb', breadcrumb],
       ['Template', 'blog-post'],
     ]));
