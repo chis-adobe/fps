@@ -40,7 +40,24 @@ function readConfig(block) {
 }
 
 const normalize = (value) => (value || '').toString().trim().toLowerCase();
-const splitList = (value) => (value || '').split(',').map(normalize).filter(Boolean);
+/**
+ * Splits a list value: comma-separated text, or a JSON array (how the query index stores
+ * multi-value columns such as tags).
+ * @param {string} value
+ * @returns {string[]}
+ */
+function splitList(value) {
+  const text = (value || '').toString().trim();
+  if (text.startsWith('[')) {
+    try {
+      const list = JSON.parse(text);
+      if (Array.isArray(list)) return list.map(normalize).filter(Boolean);
+    } catch {
+      // not JSON: fall back to comma-separated
+    }
+  }
+  return text.split(',').map(normalize).filter(Boolean);
+}
 
 /**
  * Normalizes a page reference (path or URL) to its pathname without trailing slash.
