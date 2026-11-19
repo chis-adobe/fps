@@ -110,6 +110,23 @@ async function applyChallenger(doc, path, ensureDOMPurify) {
 }
 
 /**
+ * Editors and layout previews show a page inside a frame (or on an editing host). There the
+ * page being edited must be shown as-is, so the experiment only runs when it is forced with
+ * the `experiment` query parameter.
+ * @returns {boolean}
+ */
+function isEditingContext() {
+  try {
+    if (window.self !== window.top) return true;
+  } catch {
+    return true; // cross-origin parent: framed by an editor
+  }
+  const { hostname, search } = window.location;
+  const params = new URLSearchParams(search);
+  return hostname.endsWith('.ue.da.live') || params.has('dapreview') || params.has('quick-edit');
+}
+
+/**
  * Runs the page's experiment, if any.
  * @param {Document} doc The document
  * @param {{ ensureDOMPurify: () => Promise<void> }} options Helpers from scripts.js
@@ -125,6 +142,7 @@ export default async function runExperiment(doc, { ensureDOMPurify }) {
 
   const names = [CONTROL, ...challengers.map((_, i) => `challenger-${i + 1}`)];
   const forced = getForcedVariant(id, names);
+  if (forced < 0 && isEditingContext()) return null;
   let index = forced >= 0 ? forced : pickVariant(getWeights(challengers.length));
 
   if (index > 0) {
