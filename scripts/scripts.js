@@ -475,6 +475,49 @@ export function setDefaultMetadata(name, content) {
   document.head.append(meta);
 }
 
+/**
+ * Editors and layout previews can render a page's source document directly, with its Metadata
+ * table still in the body instead of in <head>. Copy those values into <head> (the way Edge
+ * Delivery does when it renders a page) so templates and blocks see the same metadata.
+ * Values already in <head> win.
+ * @param {Document} doc The document
+ */
+function applyInPageMetadata(doc) {
+  const table = doc.querySelector('main div.metadata');
+  if (!table) return;
+  [...table.children].forEach((row) => {
+    const [keyCell, valueCell] = row.children;
+    if (!keyCell || !valueCell) return;
+    const key = toClassName(keyCell.textContent);
+    if (!key || !isSafeObjectKey(key)) return;
+    const img = valueCell.querySelector('img');
+    const links = [...valueCell.querySelectorAll('a[href]')];
+    let value;
+    if (img) value = img.src;
+    else if (links.length) value = links.map((a) => a.href).join(', ');
+    else value = valueCell.textContent.trim();
+    if (!value) return;
+    const names = {
+      title: ['og:title'],
+      image: ['og:image', 'image'],
+      description: ['description'],
+    }[key] || [key];
+    names.forEach((name) => {
+      const attr = name.includes(':') ? 'property' : 'name';
+      if (doc.head.querySelector(`meta[${attr}="${name}"]`)) return;
+      const meta = doc.createElement('meta');
+      meta.setAttribute(attr, name);
+      meta.setAttribute('content', value);
+      doc.head.append(meta);
+    });
+    if (key === 'title' && !doc.title) doc.title = value;
+  });
+  // Edge Delivery removes the table when it renders a page; do the same
+  const section = table.parentElement;
+  table.remove();
+  if (section && section.parentElement?.tagName === 'MAIN' && !section.children.length) section.remove();
+}
+
 /** Page templates available in /templates/{name}/ (selected with the `template` metadata). */
 const TEMPLATES = ['homepage', 'blog-post', 'author'];
 
@@ -538,6 +581,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  applyInPageMetadata(doc);
   decorateTemplateAndTheme();
   if (FEATURES.themeSheet) loadThemeSpreadSheetConfig();
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
