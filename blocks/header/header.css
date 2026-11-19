@@ -152,6 +152,23 @@ header nav .nav-brand img { /* @boilerplate */
   height: auto; /* @boilerplate */
 }
 
+/* brand with a site name next to the logo (e.g. the blog navigation) */
+header .nav-brand:has(p + p) {
+  flex-basis: auto;
+}
+
+header nav .nav-brand .default-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-m);
+}
+
+header nav .nav-brand p + p {
+  font-size: var(--body-font-size-m);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 header nav .nav-brand .icon {
   display: block;
   width: var(--header-brand-width);

@@ -7,9 +7,28 @@
         "https://www.thermofisher.com/us/en/home.html"
       ],
       "blocks": [
-        { "name": "hero", "instances": [".offer-content.hr"] },
-        { "name": "teaser", "instances": [".offer-content.tf-hero-pod", ".offer-content.tf-hp-edu-lc", ".offer-content.tf-hp-edu-sc", ".offer-content.pc", ".offer-content.np"] },
-        { "name": "article-list", "instances": [".dynamic-offer:has(.post)"] }
+        {
+          "name": "hero",
+          "instances": [
+            ".offer-content.hr"
+          ]
+        },
+        {
+          "name": "teaser",
+          "instances": [
+            ".offer-content.tf-hero-pod",
+            ".offer-content.tf-hp-edu-lc",
+            ".offer-content.tf-hp-edu-sc",
+            ".offer-content.pc",
+            ".offer-content.np"
+          ]
+        },
+        {
+          "name": "article-list",
+          "instances": [
+            ".dynamic-offer:has(.post)"
+          ]
+        }
       ]
     },
     {
@@ -19,6 +38,22 @@
         "https://www.thermofisher.com/blog/semiconductors/fib-sem-semiconductor-characterization/",
         "https://www.thermofisher.com/blog/life-in-the-lab/bioprocessing-cell-culture-engineering-antibody-drug-conjugates/",
         "https://www.thermofisher.com/blog/metals/honoring-those-who-wore-the-metal-tags-veterans-day-2026/"
+      ],
+      "blocks": []
+    },
+    {
+      "name": "author",
+      "description": "Accelerating Science contributor page -> metadata-only author page (name, role, profile, expertise, education, picture). Also emits the simplified blog nav fragment.",
+      "urls": [
+        "https://admin.acceleratingscience.com/contributor/koehler-dennis/"
+      ],
+      "blocks": []
+    },
+    {
+      "name": "blog-article",
+      "description": "Blog article with the title in metadata (rendered by the blog-post template) and the author referenced by Author URL only.",
+      "urls": [
+        "https://www.thermofisher.com/blog/analyteguru/can-uhplc-take-over-serial-dilutions/"
       ],
       "blocks": []
     }

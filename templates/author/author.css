@@ -1,8 +1,9 @@
 .author main > .section > div {
-  max-width: 860px;
+  max-width: 1100px;
 }
 
 .author main h1 {
+  margin-top: 0;
   font-weight: 300;
 }
 
@@ -11,4 +12,71 @@
   height: 196px;
   object-fit: cover;
   border-radius: var(--border-radius-s);
+}
+
+/* profile rendered from metadata */
+.author main .author-profile-section .default-content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+}
+
+.author main .author-role {
+  margin-top: var(--spacing-xs);
+  color: #666;
+  font-size: var(--body-font-size-m);
+}
+
+.author main .author-picture {
+  margin: 0;
+}
+
+.author main .author-picture img {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.author main .author-sidebar-title {
+  margin: var(--spacing-l) 0 var(--spacing-xs);
+  font-size: var(--body-font-size-m);
+  font-weight: 700;
+}
+
+.author main .author-expertise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.author main .author-expertise-tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background-color: var(--light-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.author main .author-education {
+  margin: 0;
+}
+
+@media (width >= 900px) {
+  .author main .author-profile-section .default-content-wrapper {
+    grid-template-columns: 1fr 2fr;
+    gap: var(--spacing-xxl);
+  }
+
+  .author main .author-sidebar {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .author main .author-profile {
+    grid-row: 1;
+    grid-column: 2;
+  }
 }

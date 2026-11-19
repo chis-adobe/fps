@@ -2,11 +2,37 @@
   max-width: 860px;
 }
 
+.blog-post main > .section:first-of-type {
+  padding-top: var(--spacing-m);
+}
+
 .blog-post main h1 {
   font-size: var(--heading-font-size-xxl);
   font-weight: 300;
 }
 
+/* breadcrumb under the header */
+.blog-post main .blog-post-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #666;
+  font-size: var(--body-font-size-xs);
+}
+
+.blog-post main .blog-post-breadcrumb li + li::before {
+  content: '/';
+  padding-right: var(--spacing-xs);
+}
+
+.blog-post main .blog-post-breadcrumb [aria-current] {
+  color: var(--text-color);
+}
+
+/* byline */
 .blog-post main .blog-post-byline {
   display: flex;
   flex-wrap: wrap;
@@ -26,4 +52,52 @@
 .blog-post main figcaption {
   font-size: var(--body-font-size-xs);
   color: #666;
+}
+
+/* author card at the end of the article */
+.blog-post main .blog-post-author-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-m);
+  padding: var(--spacing-l);
+  border-top: 1px solid #d8d8d8;
+  background-color: #f7f7f7;
+}
+
+.blog-post main .blog-post-author-card:empty {
+  display: none;
+}
+
+.blog-post main .blog-post-author-card-picture {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.blog-post main .blog-post-author-card-picture img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.blog-post main .blog-post-author-card-name {
+  margin: 0;
+  font-size: var(--heading-font-size-l);
+}
+
+.blog-post main .blog-post-author-card-role {
+  margin: var(--spacing-xs) 0 0;
+  color: #666;
+  font-size: var(--body-font-size-xs);
+}
+
+.blog-post main .blog-post-author-card-description {
+  font-size: var(--body-font-size-s);
+}
+
+@media (width >= 600px) {
+  .blog-post main .blog-post-author-card {
+    flex-direction: row;
+    align-items: flex-start;
+  }
 }

@@ -37,6 +37,13 @@ export default function transform(hookName, element, payload) {
     panel.replaceWith(...panel.childNodes);
   });
 
+  // Yoast FAQ block: question -> h4, answer stays a paragraph
+  content.querySelectorAll('.schema-faq-question').forEach((question) => {
+    const h4 = document.createElement('h4');
+    h4.textContent = question.textContent.replace(/\s+/g, ' ').trim();
+    question.replaceWith(h4);
+  });
+
   // drop empty paragraphs
   content.querySelectorAll('p').forEach((p) => {
     if (!p.textContent.trim() && !p.querySelector('img, picture')) p.remove();
