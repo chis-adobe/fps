@@ -1,7 +1,7 @@
 import { fetchArticle, isSameSite, toSafeUrl } from '../../scripts/page-metadata.js';
 import { buildArticleItem, resolveAuthor } from '../../scripts/article-items.js';
 import {
-  DEFAULT_INDEX, fetchArticleIndex, getTagsOfInterest, normalize, TAGS_OF_INTEREST_EVENT, toList,
+  fetchArticleIndex, getTagsOfInterest, normalize, TAGS_OF_INTEREST_EVENT, toList,
 } from '../../scripts/article-index.js';
 
 /*
@@ -113,7 +113,7 @@ export default async function decorate(block) {
     const current = renderId;
     const interests = getTagsOfInterest();
     const matches = interests.length
-      ? rankByInterest(await fetchArticleIndex(DEFAULT_INDEX), interests)
+      ? rankByInterest(await fetchArticleIndex(), interests)
       : [];
     // matching articles first; remaining cards are filled with fallbacks not already shown
     const picked = matches.slice(0, count);

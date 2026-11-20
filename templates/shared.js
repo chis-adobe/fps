@@ -1,4 +1,5 @@
 import { setDefaultMetadata } from '../scripts/scripts.js';
+import { localizePath } from '../scripts/locale.js';
 
 /** Global header and footer fragments for the main site. */
 export const SITE_FRAGMENTS = {
@@ -18,7 +19,8 @@ export const BLOG_FRAGMENTS = {
  * @param {{nav: string, footer: string}} [fragments]
  */
 export function useSiteFragments(fragments = SITE_FRAGMENTS) {
-  Object.entries(fragments).forEach(([name, path]) => setDefaultMetadata(name, path));
+  // each language has its own fragments, e.g. /fr/fragments/nav-blog
+  Object.entries(fragments).forEach(([name, path]) => setDefaultMetadata(name, localizePath(path)));
 }
 
 /**

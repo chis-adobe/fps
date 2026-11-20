@@ -1,7 +1,7 @@
 import { toClassName } from '../../scripts/aem.js';
 import { buildArticleItem, resolveAuthor } from '../../scripts/article-items.js';
 import {
-  addTagOfInterest, DEFAULT_INDEX, fetchArticleIndex, getMatcher, normalize, toList,
+  addTagOfInterest, fetchArticleIndex, getMatcher, normalize, toList,
 } from '../../scripts/article-index.js';
 
 /*
@@ -17,7 +17,7 @@ import {
  * | results label  | {count} articles                  |  optional, {count} is replaced
  * | result label   | {count} article                   |  optional, used for a single result
  * | empty          | No articles match your search.    |
- * | index          | /blog/query-index.json            |  optional
+ * | index          | /blog/query-index.json            |  optional (default: the page language's blog index)
  *
  * The search is driven by the page URL: ?q=keyword (title contains) and ?tag=Tag (repeatable;
  * an article matches when it has any of the selected tags). Tag links on article cards and
@@ -138,7 +138,7 @@ export default async function decorate(block) {
   const results = el('ul', 'article-search-results');
   block.append(form, status, results);
 
-  const rows = await fetchArticleIndex(config.index || DEFAULT_INDEX);
+  const rows = await fetchArticleIndex(config.index || undefined);
   const allTags = collectTags(rows);
   const search = readSearch();
   input.value = search.q;

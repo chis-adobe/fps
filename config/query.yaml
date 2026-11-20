@@ -1,12 +1,47 @@
-# Query index for blog articles (applied to the site via the configuration service:
+# Query indexes for blog articles, one per language (applied to the site via the configuration service:
 # POST https://admin.hlx.page/config/chis-adobe/sites/fps/content/query.yaml).
-# Only published (live) pages are indexed.
+# Only published (live) pages are indexed. English: /blog/** (excludes /fr/...), French: /fr/blog/**.
 version: 1
 indices:
   blog:
     include:
       - /blog/**
     target: /blog/query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      brief:
+        select: head > meta[name="brief"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, "content")
+      author:
+        select: head > meta[name="author"]
+        value: attribute(el, "content")
+      author-url:
+        select: head > meta[name="author-url"]
+        value: attribute(el, "content")
+      date:
+        select: head > meta[name="date"]
+        value: attribute(el, "content")
+      tags:
+        select: head > meta[property="article:tag"]
+        values: attribute(el, "content")
+      template:
+        select: head > meta[name="template"]
+        value: attribute(el, "content")
+      lastModified:
+        select: none
+        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+  blog-fr:
+    include:
+      - /fr/blog/**
+    target: /fr/blog/query-index.json
     properties:
       title:
         select: head > meta[property="og:title"]

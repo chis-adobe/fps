@@ -1,15 +1,27 @@
 import { isSameSite, toSafeUrl } from './page-metadata.js';
+import { getLocale, localizePath } from './locale.js';
 
 /*
- * Shared access to the blog query index (config/query.yaml -> /blog/query-index.json) for the
- * blocks that list or search articles.
+ * Shared access to the blog query index for the blocks that list or search articles.
+ * Each language has its own blog and index (config/query.yaml): /blog/query-index.json for
+ * English, /fr/blog/query-index.json for French, so a page only lists articles in its language.
  */
 
-/** Default blog query index. */
-export const DEFAULT_INDEX = '/blog/query-index.json';
+/**
+ * The blog query index of the current page's language.
+ * @returns {string}
+ */
+export function getBlogIndexPath() {
+  return localizePath('/blog/query-index.json');
+}
 
-/** Blog article search page; tag links open it filtered by the tag (?tag=…). */
-export const ARTICLE_SEARCH_PATH = '/blog/search';
+/**
+ * The article search page of the current page's language; tag links open it with ?tag=….
+ * @returns {string}
+ */
+export function getArticleSearchPath() {
+  return localizePath('/blog/search');
+}
 
 /** Template of the pages the index should return (other /blog pages, e.g. the search page, are skipped). */
 const ARTICLE_TEMPLATE = 'blog-post';
@@ -86,7 +98,7 @@ export function getMatcher(parameter, value) {
  * @param {string} [indexPath]
  * @returns {Promise<object[]>}
  */
-export function fetchArticleIndex(indexPath = DEFAULT_INDEX) {
+export function fetchArticleIndex(indexPath = getBlogIndexPath()) {
   const url = toSafeUrl(indexPath);
   if (!url || !isSameSite(url)) return Promise.resolve([]);
   if (!cache.has(url.pathname)) {
@@ -105,8 +117,15 @@ export function fetchArticleIndex(indexPath = DEFAULT_INDEX) {
 
 /* === tags of interest === */
 
-/** Browser storage key for the tags a visitor clicked (most recent first). */
-const TAGS_OF_INTEREST_KEY = 'blog-tags-of-interest';
+/**
+ * Browser storage key for the tags a visitor clicked (most recent first), per language since
+ * each language has its own tags.
+ * @returns {string}
+ */
+function getTagsOfInterestKey() {
+  const { prefix, lang } = getLocale();
+  return prefix ? `blog-tags-of-interest-${lang}` : 'blog-tags-of-interest';
+}
 const MAX_TAGS_OF_INTEREST = 10;
 
 /** Event fired on window when the tags of interest change (detail: the new list). */
@@ -118,7 +137,7 @@ export const TAGS_OF_INTEREST_EVENT = 'tags-of-interest-change';
  */
 export function getTagsOfInterest() {
   try {
-    const list = JSON.parse(window.localStorage.getItem(TAGS_OF_INTEREST_KEY) || '[]');
+    const list = JSON.parse(window.localStorage.getItem(getTagsOfInterestKey()) || '[]');
     return Array.isArray(list) ? list.filter((tag) => typeof tag === 'string' && tag.trim()) : [];
   } catch {
     return [];
@@ -136,7 +155,7 @@ export function addTagOfInterest(tag) {
   const list = [value, ...getTagsOfInterest().filter((t) => normalize(t) !== normalize(value))]
     .slice(0, MAX_TAGS_OF_INTEREST);
   try {
-    window.localStorage.setItem(TAGS_OF_INTEREST_KEY, JSON.stringify(list));
+    window.localStorage.setItem(getTagsOfInterestKey(), JSON.stringify(list));
   } catch {
     // storage unavailable (e.g. blocked): nothing to remember
   }
@@ -149,7 +168,7 @@ export function addTagOfInterest(tag) {
  * @returns {string}
  */
 export function getTagSearchUrl(tag) {
-  const url = new URL(ARTICLE_SEARCH_PATH, window.location.origin);
+  const url = new URL(getArticleSearchPath(), window.location.origin);
   url.searchParams.set('tag', tag);
   return url.href;
 }

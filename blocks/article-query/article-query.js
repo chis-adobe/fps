@@ -1,6 +1,6 @@
 import { toClassName } from '../../scripts/aem.js';
 import { buildArticleItem, resolveAuthor } from '../../scripts/article-items.js';
-import { DEFAULT_INDEX, fetchArticleIndex, getMatcher } from '../../scripts/article-index.js';
+import { fetchArticleIndex, getMatcher } from '../../scripts/article-index.js';
 
 /*
  * Article Query block — lists articles from the blog query index that match one
@@ -11,7 +11,7 @@ import { DEFAULT_INDEX, fetchArticleIndex, getMatcher } from '../../scripts/arti
  * | parameter     | author                   |  author, tag(s), title, or any index column
  * | value         | /authors/dennis-koehler  |  author page path (or name), tag(s), keyword…
  * | limit         | 10                       |  optional
- * | index         | /blog/query-index.json   |  optional
+ * | index         | /blog/query-index.json   |  optional (default: the page language's blog index)
  * | empty         | No articles yet.         |  optional text shown when nothing matches
  *
  * Matching: author = same author page (or author name); tag/tags = any of the given
@@ -51,7 +51,7 @@ export default async function decorate(block) {
   if (!parameter || !value) return;
 
   const currentPath = window.location.pathname.replace(/\/$/, '');
-  const rows = (await fetchArticleIndex(config.index || DEFAULT_INDEX))
+  const rows = (await fetchArticleIndex(config.index || undefined))
     .filter((row) => row.path !== currentPath)
     .filter(getMatcher(parameter, value))
     .slice(0, limit);
