@@ -64,3 +64,27 @@
 .article-list .article-list-author {
   font-weight: 700;
 }
+
+.article-list .article-list-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-list .article-list-tags a {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: var(--light-color);
+  color: var(--text-color);
+  font-size: 13px;
+}
+
+.article-list .article-list-tags a:hover {
+  background-color: var(--link-color);
+  color: var(--background-color);
+  text-decoration: none;
+}

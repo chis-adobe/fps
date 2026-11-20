@@ -1,0 +1,113 @@
+import { isSameSite, toSafeUrl } from './page-metadata.js';
+
+/*
+ * Shared access to the blog query index (config/query.yaml -> /blog/query-index.json) for the
+ * blocks that list or search articles.
+ */
+
+/** Default blog query index. */
+export const DEFAULT_INDEX = '/blog/query-index.json';
+
+/** Blog article search page; tag links open it filtered by the tag (?tag=…). */
+export const ARTICLE_SEARCH_PATH = '/blog/search';
+
+/** Template of the pages the index should return (other /blog pages, e.g. the search page, are skipped). */
+const ARTICLE_TEMPLATE = 'blog-post';
+
+const MAX_ROWS = 500;
+const cache = new Map();
+
+/**
+ * Lowercases and trims a value for matching.
+ * @param {*} value
+ * @returns {string}
+ */
+export const normalize = (value) => (value ?? '').toString().trim().toLowerCase();
+
+/**
+ * Turns a list value into an array of trimmed strings: an array (index JSON), a JSON array
+ * string, or comma-separated text.
+ * @param {*} value
+ * @returns {string[]}
+ */
+export function toList(value) {
+  if (Array.isArray(value)) return value.map((v) => `${v}`.trim()).filter(Boolean);
+  const text = (value ?? '').toString().trim();
+  if (text.startsWith('[')) {
+    try {
+      const list = JSON.parse(text);
+      if (Array.isArray(list)) return list.map((v) => `${v}`.trim()).filter(Boolean);
+    } catch {
+      // not JSON: comma-separated
+    }
+  }
+  return text.split(',').map((v) => v.trim()).filter(Boolean);
+}
+
+/**
+ * Normalizes a page reference (path or URL) to its pathname without trailing slash.
+ * @param {string} value
+ * @returns {string}
+ */
+function toPath(value) {
+  const url = toSafeUrl(value);
+  return url ? url.pathname.replace(/\/$/, '').toLowerCase() : normalize(value);
+}
+
+/**
+ * Builds a matcher for a parameter/value pair.
+ * author: same author page (path) or author name; tag/tags: any of the comma-separated tags;
+ * anything else (e.g. title): case-insensitive "contains" on that index column.
+ * @param {string} parameter
+ * @param {string} value
+ * @returns {(row: object) => boolean}
+ */
+export function getMatcher(parameter, value) {
+  const wanted = normalize(value);
+  switch (parameter) {
+    case 'author':
+    case 'author-url': {
+      const path = toPath(value);
+      return (row) => (row['author-url'] && toPath(row['author-url']) === path)
+        || normalize(row.author) === wanted;
+    }
+    case 'tag':
+    case 'tags': {
+      const tags = toList(value).map(normalize);
+      return (row) => toList(row.tags).map(normalize).some((tag) => tags.includes(tag));
+    }
+    default:
+      return (row) => normalize(row[parameter]).includes(wanted);
+  }
+}
+
+/**
+ * Fetches the article rows of a query index (cached per path), newest first.
+ * @param {string} [indexPath]
+ * @returns {Promise<object[]>}
+ */
+export function fetchArticleIndex(indexPath = DEFAULT_INDEX) {
+  const url = toSafeUrl(indexPath);
+  if (!url || !isSameSite(url)) return Promise.resolve([]);
+  if (!cache.has(url.pathname)) {
+    cache.set(url.pathname, fetch(`${url.pathname}?limit=${MAX_ROWS}`)
+      .then((resp) => (resp.ok ? resp.json() : { data: [] }))
+      .then((json) => (Array.isArray(json.data) ? json.data : []))
+      .then((rows) => rows
+        .filter((row) => row.path && (!row.template || row.template === ARTICLE_TEMPLATE))
+        .sort((a, b) => (b.date || '').localeCompare(a.date || '')))
+      .catch(() => []));
+  }
+  return cache.get(url.pathname);
+}
+
+/**
+ * Link to the article search page filtered by a tag.
+ * @param {string} tag
+ * @returns {string}
+ */
+export function getTagSearchUrl(tag) {
+  const url = new URL(ARTICLE_SEARCH_PATH, window.location.origin);
+  url.searchParams.set('tag', tag);
+  return url.href;
+}

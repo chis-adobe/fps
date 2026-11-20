@@ -501,6 +501,7 @@ function applyInPageMetadata(doc) {
       title: ['og:title'],
       image: ['og:image', 'image'],
       description: ['description'],
+      tags: ['article:tag'],
     }[key] || [key];
     names.forEach((name) => {
       const attr = name.includes(':') ? 'property' : 'name';
@@ -519,7 +520,7 @@ function applyInPageMetadata(doc) {
 }
 
 /** Page templates available in /templates/{name}/ (selected with the `template` metadata). */
-const TEMPLATES = ['homepage', 'blog-post', 'author'];
+const TEMPLATES = ['homepage', 'blog-post', 'blog-search', 'author'];
 
 /**
  * Loads the page template's CSS and JS, if the page uses a known template.

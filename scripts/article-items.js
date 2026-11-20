@@ -2,9 +2,10 @@ import { createOptimizedPicture } from './aem.js';
 import {
   fetchAuthor, formatDate, isSameSite, toSafeUrl,
 } from './page-metadata.js';
+import { getTagSearchUrl, toList } from './article-index.js';
 
 /*
- * Shared rendering of article teasers (image, title, author, date) for blocks that list
+ * Shared rendering of article teasers (image, title, author, date, tags) for blocks that list
  * articles, e.g. article-list (hand-picked references) and article-query (query index results).
  * Class names are prefixed with the block name so each block keeps its own styling.
  */
@@ -44,9 +45,31 @@ export async function resolveAuthor(article, base = window.location.href) {
 }
 
 /**
+ * Builds the list of an article's tags; each tag links to the article search filtered by it.
+ * @param {string} className Class of the list
+ * @param {string[]|string} tags Tags (array, JSON array or comma-separated)
+ * @returns {HTMLUListElement|null}
+ */
+export function buildTagList(className, tags) {
+  const list = toList(tags);
+  if (!list.length) return null;
+  const ul = document.createElement('ul');
+  ul.className = className;
+  list.forEach((tag) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = getTagSearchUrl(tag);
+    a.textContent = tag;
+    li.append(a);
+    ul.append(li);
+  });
+  return ul;
+}
+
+/**
  * Builds one article list item.
  * @param {string} prefix Class prefix (the block name)
- * @param {{url: URL, title: string, date?: string, image?: string}} article
+ * @param {{url: URL, title: string, date?: string, image?: string, tags?: string[]|string}} article
  * @param {{name: string, href: string|null}|null} author
  * @returns {HTMLLIElement}
  */
@@ -95,6 +118,9 @@ export function buildArticleItem(prefix, article, author) {
     }
     body.append(meta);
   }
+
+  const tags = buildTagList(`${prefix}-tags`, article.tags);
+  if (tags) body.append(tags);
 
   li.append(body);
   return li;

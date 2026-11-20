@@ -62,6 +62,17 @@ function getImage(doc) {
 }
 
 /**
+ * Returns the page's tags. Edge Delivery publishes the Tags metadata as one
+ * `article:tag` meta per tag (getMetadata joins them with ", ").
+ * @param {Document} [doc]
+ * @returns {string[]}
+ */
+export function getTags(doc = document) {
+  const value = getMetadata('article:tag', doc) || getMetadata('tags', doc);
+  return value.split(',').map((tag) => tag.trim()).filter(Boolean);
+}
+
+/**
  * Reads the details of an author page from its metadata.
  * @param {string} value Author page URL or path
  * @returns {Promise<object|null>} name, role, description, image, url
@@ -81,7 +92,7 @@ export async function fetchAuthor(value) {
 /**
  * Reads the details of an article page from its metadata.
  * @param {string} value Article URL or path
- * @returns {Promise<object|null>} title, brief, author, authorUrl, date, image, imageAlt
+ * @returns {Promise<object|null>} title, brief, author, authorUrl, date, image, imageAlt, tags
  */
 export async function fetchArticle(value) {
   const doc = await fetchPage(value);
@@ -94,6 +105,7 @@ export async function fetchArticle(value) {
     brief: getMetadata('brief', doc),
     image: getImage(doc),
     imageAlt: getMetadata('image-alt', doc),
+    tags: getTags(doc),
   };
 }
 

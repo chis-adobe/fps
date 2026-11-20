@@ -32,6 +32,7 @@ export default async function decorate(block) {
       title: article?.title || text,
       date: article?.date,
       image: article?.image,
+      tags: article?.tags,
     }, author);
   }));
 

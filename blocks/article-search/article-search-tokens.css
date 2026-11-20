@@ -1,0 +1,10 @@
+/* article-search design tokens */
+:root {
+  --article-search-gap: var(--spacing-l);
+  --article-search-image-width: 160px;
+  --article-search-image-ratio: 16 / 10;
+  --article-search-title-size: 18px;
+  --article-search-meta-size: var(--body-font-size-xs);
+  --article-search-meta-color: #666;
+  --article-search-divider: 1px solid #d8d8d8;
+}

@@ -1,6 +1,6 @@
 import { toClassName } from '../../scripts/aem.js';
-import { isSameSite, toSafeUrl } from '../../scripts/page-metadata.js';
 import { buildArticleItem, resolveAuthor } from '../../scripts/article-items.js';
+import { DEFAULT_INDEX, fetchArticleIndex, getMatcher } from '../../scripts/article-index.js';
 
 /*
  * Article Query block — lists articles from the blog query index that match one
@@ -19,7 +19,6 @@ import { buildArticleItem, resolveAuthor } from '../../scripts/article-items.js'
  * Results are sorted newest first.
  */
 
-const DEFAULT_INDEX = '/blog/query-index.json';
 const MAX_RESULTS = 500;
 
 /**
@@ -39,79 +38,6 @@ function readConfig(block) {
   return config;
 }
 
-const normalize = (value) => (value || '').toString().trim().toLowerCase();
-/**
- * Splits a list value: comma-separated text, or a JSON array (how the query index stores
- * multi-value columns such as tags).
- * @param {string} value
- * @returns {string[]}
- */
-function splitList(value) {
-  const text = (value || '').toString().trim();
-  if (text.startsWith('[')) {
-    try {
-      const list = JSON.parse(text);
-      if (Array.isArray(list)) return list.map(normalize).filter(Boolean);
-    } catch {
-      // not JSON: fall back to comma-separated
-    }
-  }
-  return text.split(',').map(normalize).filter(Boolean);
-}
-
-/**
- * Normalizes a page reference (path or URL) to its pathname without trailing slash.
- * @param {string} value
- * @returns {string}
- */
-function toPath(value) {
-  const url = toSafeUrl(value);
-  return url ? url.pathname.replace(/\/$/, '').toLowerCase() : normalize(value);
-}
-
-/**
- * Builds the matcher for the parameter/value pair.
- * @param {string} parameter
- * @param {string} value
- * @returns {(row: object) => boolean}
- */
-function getMatcher(parameter, value) {
-  const wanted = normalize(value);
-  switch (parameter) {
-    case 'author':
-    case 'author-url': {
-      const path = toPath(value);
-      return (row) => (row['author-url'] && toPath(row['author-url']) === path)
-        || normalize(row.author) === wanted;
-    }
-    case 'tag':
-    case 'tags': {
-      const tags = splitList(value);
-      return (row) => splitList(row.tags).some((tag) => tags.includes(tag));
-    }
-    default:
-      return (row) => normalize(row[parameter]).includes(wanted);
-  }
-}
-
-/**
- * Fetches the query index rows.
- * @param {string} indexPath
- * @returns {Promise<object[]>}
- */
-async function fetchIndex(indexPath) {
-  const url = toSafeUrl(indexPath);
-  if (!url || !isSameSite(url)) return [];
-  try {
-    const resp = await fetch(`${url.pathname}?limit=${MAX_RESULTS}`);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return Array.isArray(json.data) ? json.data : [];
-  } catch {
-    return [];
-  }
-}
-
 /**
  * loads and decorates the article query block
  * @param {Element} block The article-query block element
@@ -125,10 +51,9 @@ export default async function decorate(block) {
   if (!parameter || !value) return;
 
   const currentPath = window.location.pathname.replace(/\/$/, '');
-  const rows = (await fetchIndex(config.index || DEFAULT_INDEX))
-    .filter((row) => row.path && row.path !== currentPath)
+  const rows = (await fetchArticleIndex(config.index || DEFAULT_INDEX))
+    .filter((row) => row.path !== currentPath)
     .filter(getMatcher(parameter, value))
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
     .slice(0, limit);
 
   if (!rows.length) {
@@ -145,7 +70,7 @@ export default async function decorate(block) {
     const url = new URL(row.path, window.location.origin);
     const author = await resolveAuthor({ author: row.author, authorUrl: row['author-url'] }, url);
     return buildArticleItem('article-query', {
-      url, title: row.title, date: row.date, image: row.image,
+      url, title: row.title, date: row.date, image: row.image, tags: row.tags,
     }, author);
   }));
 

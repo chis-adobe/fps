@@ -1,0 +1,7 @@
+.blog-search main > .section > div {
+  max-width: 1100px;
+}
+
+.blog-search main h1 {
+  font-weight: 300;
+}

@@ -1,12 +1,13 @@
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import {
-  fetchAuthor, formatDate, isSameSite, toSafeUrl,
+  fetchAuthor, formatDate, getTags, isSameSite, toSafeUrl,
 } from '../../scripts/page-metadata.js';
+import { buildTagList } from '../../scripts/article-items.js';
 import { BLOG_FRAGMENTS, useSiteFragments } from '../shared.js';
 
 /*
- * Blog post template: simplified (blog) header, a breadcrumb under it, then title, byline
- * (author + date), brief and image, the article content, and an author card at the end.
+ * Blog post template: simplified (blog) header, a breadcrumb under it, then title, tags (linking
+ * to the article search), byline (author + date), brief and image, the article content, and an author card at the end.
  * Title, Brief and Image (+ Image Alt) come from the page metadata when the body has no heading 1
  * (older articles keep their authored title and image). Author details come from the page
  * referenced by `Author URL`.
@@ -189,12 +190,16 @@ export default function decorate(doc) {
   if (breadcrumb) first.prepend(breadcrumb);
   if (!h1) return;
 
-  // order under the title: byline (author, date), brief, image, then the article content
+  // order under the title: tags, byline (author, date), brief, image, then the article content
   let anchor = h1;
   const place = (node) => {
     anchor.after(node);
     anchor = node;
   };
+
+  // tags link to the article search, filtered by the tag
+  const tags = buildTagList('blog-post-tags', getTags());
+  if (tags) place(tags);
 
   const date = getMetadata('date');
   const hasAuthor = getMetadata('author-url') || getMetadata('author');

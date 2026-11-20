@@ -32,6 +32,31 @@
   color: var(--text-color);
 }
 
+/* tags under the title, linking to the article search */
+.blog-post main .blog-post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-post main .blog-post-tags a {
+  display: inline-block;
+  padding: 2px 12px;
+  border-radius: 999px;
+  background-color: var(--light-color);
+  color: var(--text-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.blog-post main .blog-post-tags a:hover {
+  background-color: var(--link-color);
+  color: var(--background-color);
+  text-decoration: none;
+}
+
 /* byline */
 .blog-post main .blog-post-byline {
   display: flex;
