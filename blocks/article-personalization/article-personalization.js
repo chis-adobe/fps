@@ -15,9 +15,10 @@ import {
  * | /blog/is-low-elsd-sensitivity-...        |
  *
  * It shows as many cards as there are fallback articles (2 above). Articles with the most
- * recently clicked tag come first; older tags of interest order the rest. The
- * fallback articles show when the visitor has no tags of interest yet, or when fewer matching
- * articles than cards are found. The cards update as soon as the visitor clicks another tag.
+ * recently clicked tag come first; older tags of interest order the rest. When fewer matching
+ * articles than cards are found, the remaining cards show fallback articles (skipping any that
+ * already show); with no tags of interest or no match, only the fallbacks show. The cards update
+ * as soon as the visitor clicks another tag.
  */
 
 const DEFAULT_COUNT = 2;
@@ -114,13 +115,20 @@ export default async function decorate(block) {
     const matches = interests.length
       ? rankByInterest(await fetchArticleIndex(DEFAULT_INDEX), interests)
       : [];
-    const personalized = matches.length >= count;
-    const cards = personalized
-      ? await cardsFromIndex(matches.slice(0, count))
-      : await cardsFromPages(fallbacks);
+    // matching articles first; remaining cards are filled with fallbacks not already shown
+    const picked = matches.slice(0, count);
+    const pickedPaths = new Set(picked.map((row) => row.path.replace(/\/$/, '')));
+    const fillers = fallbacks
+      .filter((url) => !pickedPaths.has(url.pathname.replace(/\/$/, '')))
+      .slice(0, count - picked.length);
+    const [matchCards, fillerCards] = await Promise.all([
+      cardsFromIndex(picked),
+      cardsFromPages(fillers),
+    ]);
     if (current !== renderId) return; // a newer render started meanwhile
-    list.replaceChildren(...cards);
-    block.dataset.source = personalized ? 'interests' : 'fallback';
+    list.replaceChildren(...matchCards, ...fillerCards);
+    if (!picked.length) block.dataset.source = 'fallback';
+    else block.dataset.source = fillers.length ? 'mixed' : 'interests';
   };
 
   window.addEventListener(TAGS_OF_INTEREST_EVENT, render);
