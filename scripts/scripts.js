@@ -22,6 +22,7 @@ import { decorateSpanTags } from './feature-flags/bracket-tags.js';
 import { isVideoLink } from './utils.js';
 import FEATURES from './feature-flags/features.js';
 import { getLocale } from './locale.js';
+import { runExperimentation, runExperimentationLazy } from './experiment-loader.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -544,19 +545,17 @@ async function loadTemplate(doc) {
 }
 
 /**
- * Runs a content experiment when the page defines one in its metadata.
- * @param {Document} doc The document
+ * AEM Experimentation plugin configuration (plugins/experimentation): experiments, campaigns and
+ * audiences from page metadata, reported to RUM. The live site (.aem.live) is production: no
+ * simulation panel there.
  */
-async function loadExperiment(doc) {
-  if (!getMetadata('experiment') || !getMetadata('experiment-variants')) return;
-  try {
-    const { default: runExperiment } = await import('./experiment.js');
-    await runExperiment(doc, { ensureDOMPurify });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Experiment failed', error);
-  }
-}
+const experimentationConfig = {
+  isProd: () => window.location.hostname.endsWith('.aem.live'),
+  audiences: {
+    mobile: () => window.innerWidth < 600,
+    desktop: () => window.innerWidth >= 600,
+  },
+};
 
 
 /**
@@ -589,7 +588,7 @@ async function loadEager(doc) {
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
   }
-  await loadExperiment(doc);
+  await runExperimentation(doc, experimentationConfig);
   await loadTemplate(doc);
   const main = doc.querySelector('main');
   if (main) {
@@ -610,6 +609,8 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   autolinkModals(doc);
+  // Sidekick "Experimentation" panel (preview and local only)
+  runExperimentationLazy(doc, experimentationConfig);
 
   const main = doc.querySelector('main');
   await loadSections(main);

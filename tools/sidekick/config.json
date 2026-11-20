@@ -3,20 +3,42 @@
     {
       "id": "aemedit",
       "title": "DA Edit",
-      "environments": [ "dev", "preview", "live" ],
+      "environments": [
+        "dev",
+        "preview",
+        "live"
+      ],
       "event": "aemedit"
     },
     {
       "id": "experience-workspace",
       "title": "Canvas",
-      "environments": [ "dev", "preview", "live" ],
+      "environments": [
+        "dev",
+        "preview",
+        "live"
+      ],
       "event": "experience-workspace"
     },
     {
       "id": "quick-edit",
       "title": "Quick Edit",
-      "environments": [ "dev", "preview" ],
+      "environments": [
+        "dev",
+        "preview"
+      ],
       "event": "quick-edit"
+    },
+    {
+      "id": "aem-experimentation",
+      "titleI18n": {
+        "en": "Experimentation"
+      },
+      "environments": [
+        "dev",
+        "preview"
+      ],
+      "event": "aem-experimentation-sidekick"
     }
   ]
 }
