@@ -2,7 +2,7 @@ import { createOptimizedPicture } from './aem.js';
 import {
   fetchAuthor, formatDate, isSameSite, toSafeUrl,
 } from './page-metadata.js';
-import { getTagSearchUrl, toList } from './article-index.js';
+import { addTagOfInterest, getTagSearchUrl, toList } from './article-index.js';
 
 /*
  * Shared rendering of article teasers (image, title, author, date, tags) for blocks that list
@@ -45,7 +45,8 @@ export async function resolveAuthor(article, base = window.location.href) {
 }
 
 /**
- * Builds the list of an article's tags; each tag links to the article search filtered by it.
+ * Builds the list of an article's tags; each tag links to the article search filtered by it and
+ * is remembered as a tag of interest when clicked.
  * @param {string} className Class of the list
  * @param {string[]|string} tags Tags (array, JSON array or comma-separated)
  * @returns {HTMLUListElement|null}
@@ -60,6 +61,8 @@ export function buildTagList(className, tags) {
     const a = document.createElement('a');
     a.href = getTagSearchUrl(tag);
     a.textContent = tag;
+    // a clicked tag becomes a "tag of interest" for article personalization
+    a.addEventListener('click', () => addTagOfInterest(tag));
     li.append(a);
     ul.append(li);
   });

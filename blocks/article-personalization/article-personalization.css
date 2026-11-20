@@ -1,0 +1,90 @@
+@import url('./article-personalization-tokens.css');
+
+.article-personalization > ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--article-personalization-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-personalization .article-personalization-item {
+  display: flex;
+  gap: var(--spacing-m);
+  align-items: flex-start;
+  padding-bottom: var(--article-personalization-gap);
+  border-bottom: var(--article-personalization-divider);
+}
+
+.article-personalization .article-personalization-item:last-child {
+  border-bottom: 0;
+}
+
+.article-personalization .article-personalization-image {
+  flex: 0 0 var(--article-personalization-image-width);
+  line-height: 0;
+}
+
+.article-personalization .article-personalization-image img {
+  width: 100%;
+  aspect-ratio: var(--article-personalization-image-ratio);
+  object-fit: cover;
+  border-radius: var(--border-radius-s);
+}
+
+.article-personalization .article-personalization-body {
+  min-width: 0;
+}
+
+.article-personalization .article-personalization-title {
+  margin: 0;
+  font-size: var(--article-personalization-title-size);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.article-personalization .article-personalization-title a {
+  color: var(--text-color);
+}
+
+.article-personalization .article-personalization-title a:hover {
+  color: var(--link-color);
+}
+
+.article-personalization .article-personalization-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--spacing-s);
+  margin: var(--spacing-xs) 0 0;
+  color: var(--article-personalization-meta-color);
+  font-size: var(--article-personalization-meta-size);
+}
+
+.article-personalization .article-personalization-author {
+  font-weight: 700;
+}
+
+.article-personalization .article-personalization-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-personalization .article-personalization-tags a {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: var(--light-color);
+  color: var(--text-color);
+  font-size: 13px;
+}
+
+.article-personalization .article-personalization-tags a:hover {
+  background-color: var(--link-color);
+  color: var(--background-color);
+  text-decoration: none;
+}

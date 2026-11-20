@@ -16,6 +16,15 @@ import AEM_ASSETS from './aem-assets.js';
 
 const PAGE_TEMPLATE = { name: 'blog-article', blocks: [] };
 
+/*
+ * Curated tags (from the approved list on the options tab of /docs/library/blocks.json),
+ * shared across articles; they replace the source keywords for these articles.
+ */
+const TAGS = {
+  'can-uhplc-take-over-serial-dilutions': ['Chromatography', 'UHPLC', 'Automation', 'Industrial'],
+  'is-low-elsd-sensitivity-limiting-your-impurity-analysis': ['Chromatography', 'HPLC', 'Impurity Analysis', 'Industrial'],
+};
+
 const text = (el) => (el?.textContent || '').replace(/\s+/g, ' ').trim();
 const meta = (document, selector) => document.querySelector(selector)?.getAttribute('content') || '';
 
@@ -115,7 +124,7 @@ export default {
       ['Description', description],
       ['Author URL', authorName ? `/authors/${authorSlug(authorName)}` : ''],
       ['Date', date],
-      ['Tags', (params?.keywords?.length ? params.keywords : readTagClasses(article)).join(', ')],
+      ['Tags', (TAGS[slug] || (params?.keywords?.length ? params.keywords : readTagClasses(article))).join(', ')],
       ['Breadcrumb', breadcrumb],
       ['Template', 'blog-post'],
     ]));

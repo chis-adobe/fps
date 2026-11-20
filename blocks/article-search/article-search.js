@@ -1,7 +1,7 @@
 import { toClassName } from '../../scripts/aem.js';
 import { buildArticleItem, resolveAuthor } from '../../scripts/article-items.js';
 import {
-  DEFAULT_INDEX, fetchArticleIndex, getMatcher, normalize, toList,
+  addTagOfInterest, DEFAULT_INDEX, fetchArticleIndex, getMatcher, normalize, toList,
 } from '../../scripts/article-index.js';
 
 /*
@@ -185,8 +185,12 @@ export default async function decorate(block) {
     toggle.setAttribute('aria-pressed', selected.has(normalize(tag)));
     toggle.addEventListener('click', () => {
       const key = normalize(tag);
-      if (selected.has(key)) selected.delete(key);
-      else selected.add(key);
+      if (selected.has(key)) {
+        selected.delete(key);
+      } else {
+        selected.add(key);
+        addTagOfInterest(tag);
+      }
       toggle.setAttribute('aria-pressed', selected.has(key));
       render();
     });

@@ -1,0 +1,10 @@
+/* article-personalization design tokens */
+:root {
+  --article-personalization-gap: var(--spacing-l);
+  --article-personalization-image-width: 160px;
+  --article-personalization-image-ratio: 16 / 10;
+  --article-personalization-title-size: 18px;
+  --article-personalization-meta-size: var(--body-font-size-xs);
+  --article-personalization-meta-color: #666;
+  --article-personalization-divider: 1px solid #d8d8d8;
+}

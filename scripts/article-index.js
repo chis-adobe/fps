@@ -101,6 +101,46 @@ export function fetchArticleIndex(indexPath = DEFAULT_INDEX) {
   return cache.get(url.pathname);
 }
 
+/* === tags of interest === */
+
+/** Browser storage key for the tags a visitor clicked (most recent first). */
+const TAGS_OF_INTEREST_KEY = 'blog-tags-of-interest';
+const MAX_TAGS_OF_INTEREST = 10;
+
+/** Event fired on window when the tags of interest change (detail: the new list). */
+export const TAGS_OF_INTEREST_EVENT = 'tags-of-interest-change';
+
+/**
+ * Returns the visitor's tags of interest, most recent first.
+ * @returns {string[]}
+ */
+export function getTagsOfInterest() {
+  try {
+    const list = JSON.parse(window.localStorage.getItem(TAGS_OF_INTEREST_KEY) || '[]');
+    return Array.isArray(list) ? list.filter((tag) => typeof tag === 'string' && tag.trim()) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Records a tag the visitor showed interest in (clicked tag link or selected tag filter).
+ * Stored only in this browser.
+ * @param {string} tag
+ */
+export function addTagOfInterest(tag) {
+  const value = `${tag ?? ''}`.trim().slice(0, 100);
+  if (!value) return;
+  const list = [value, ...getTagsOfInterest().filter((t) => normalize(t) !== normalize(value))]
+    .slice(0, MAX_TAGS_OF_INTEREST);
+  try {
+    window.localStorage.setItem(TAGS_OF_INTEREST_KEY, JSON.stringify(list));
+  } catch {
+    // storage unavailable (e.g. blocked): nothing to remember
+  }
+  window.dispatchEvent(new CustomEvent(TAGS_OF_INTEREST_EVENT, { detail: list }));
+}
+
 /**
  * Link to the article search page filtered by a tag.
  * @param {string} tag
