@@ -90,7 +90,9 @@ export function fetchArticleIndex(indexPath = DEFAULT_INDEX) {
   const url = toSafeUrl(indexPath);
   if (!url || !isSameSite(url)) return Promise.resolve([]);
   if (!cache.has(url.pathname)) {
-    cache.set(url.pathname, fetch(`${url.pathname}?limit=${MAX_ROWS}`)
+    // revalidate with the server instead of reusing a browser-cached copy (cached for up to
+    // 2 hours on the live site), so newly published articles show up right away
+    cache.set(url.pathname, fetch(`${url.pathname}?limit=${MAX_ROWS}`, { cache: 'no-cache' })
       .then((resp) => (resp.ok ? resp.json() : { data: [] }))
       .then((json) => (Array.isArray(json.data) ? json.data : []))
       .then((rows) => rows
