@@ -14,8 +14,8 @@ import {
  * | /blog/can-uhplc-take-over-serial-...     |
  * | /blog/is-low-elsd-sensitivity-...        |
  *
- * It shows as many cards as there are fallback articles (2 above). Articles sharing the most
- * tags of interest come first (more recent interests win ties, then newer articles). The
+ * It shows as many cards as there are fallback articles (2 above). Articles with the most
+ * recently clicked tag come first; older tags of interest order the rest. The
  * fallback articles show when the visitor has no tags of interest yet, or when fewer matching
  * articles than cards are found. The cards update as soon as the visitor clicks another tag.
  */
@@ -35,25 +35,29 @@ function readFallbacks(block) {
 }
 
 /**
- * Ranks index rows against the tags of interest.
+ * Ranks index rows against the tags of interest. The most recent tag counts more than all
+ * older tags together (weights 1, 1/2, 1/4, …), so articles with the latest clicked tag always
+ * come first; older tags only order articles among themselves. Newer articles win exact ties.
  * @param {object[]} rows Index rows
  * @param {string[]} interests Tags of interest, most recent first
  * @returns {object[]} Matching rows, best first
  */
 function rankByInterest(rows, interests) {
-  const weights = new Map(interests.map((tag, i) => [normalize(tag), interests.length - i]));
+  const weights = new Map();
+  interests.forEach((tag, i) => {
+    const key = normalize(tag);
+    if (!weights.has(key)) weights.set(key, 2 ** -i);
+  });
   const currentPath = window.location.pathname.replace(/\/$/, '');
   return rows
     .filter((row) => row.path !== currentPath)
     .map((row) => {
-      const tags = toList(row.tags).map(normalize).filter((tag) => weights.has(tag));
-      const recency = tags.reduce((max, tag) => Math.max(max, weights.get(tag)), 0);
-      return { row, matches: tags.length, recency };
+      const tags = new Set(toList(row.tags).map(normalize));
+      const score = [...tags].reduce((sum, tag) => sum + (weights.get(tag) || 0), 0);
+      return { row, score };
     })
-    .filter(({ matches }) => matches > 0)
-    .sort((a, b) => b.matches - a.matches
-      || b.recency - a.recency
-      || (b.row.date || '').localeCompare(a.row.date || ''))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || (b.row.date || '').localeCompare(a.row.date || ''))
     .map(({ row }) => row);
 }
 
